@@ -1,0 +1,19 @@
+1. Belady's Anomaly: In Test Case 2, why does adding a 4th frame cause MORE page faults than having only 3 frames? This seems counterintuitive.
+- Belady’s Anomaly happens because FIFO doesn’t pay attention to which pages will be needed again. When the fourth frame is added, FIFO ends up evicting pages that are still important, causing the extra faults.
+With only three frames, it accidentally keeps the more useful pages longer, so it performs better.
+
+2. Data Structures: Why do we need both a Queue AND a Set? What would happen if we only used a Queue?
+- The Queue keeps track of the order pages arrived so FIFO knows which one to remove first. The Set gives fast checks to see if a page is already in memory. 
+If we used only a Queue, checking for hits would be slow because we'd have to search through the whole list.
+
+3. Performance: If memory access takes 200 nanoseconds and a page fault takes 8 milliseconds, calculate the effective access time for Test Case 1 with 3 frames. (Use the formula from the lesson)
+- With a 75% page-fault rate, most accesses end up paying the very slow 8 ms penalty. Plugging the numbers into the formula gives an effective access time of about 6 milliseconds. 
+This shows how even a modest fault rate completely overwhelms fast memory and slows the system dramatically.
+
+4. Pattern Analysis: Which test case had the worst performance with 3 frames? Why did that particular access pattern cause so many page faults?
+- Test Case 2 performs the worst because its working set is larger than the number of available frames. FIFO keeps kicking out pages that are about to be used again, creating a long chain of faults. 
+The constant cycling through more pages than memory can hold makes FIFO struggle badly.
+
+5. Real World: Based on your observations, why do you think modern operating systems don't use pure FIFO for page replacement?
+- Modern operating systems avoid pure FIFO because it makes decisions blindly and often evicts pages that are still in heavy use. It can even get worse when more memory is added. 
+Algorithms that consider recent activity like LRU or Clock handle real programs much better and avoid FIFO’s unpredictable behavior.
